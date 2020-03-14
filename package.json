@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/DarrenVictoriano/BitVault#readme",
   "devDependencies": {
-    "concurrently": "^5.1.0",
-    "if-env": "^1.0.4"
+    "concurrently": "^5.1.0"
   },
   "dependencies": {
+    "if-env": "^1.0.4",
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "dotenv": "^8.2.0",
