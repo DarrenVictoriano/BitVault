@@ -7,9 +7,9 @@
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
     "start:prod": "node server.js",
     "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
-    "client": "npm run start --prefix client",
-    "install": "npm install --prefix client",
-    "build": "npm run build --prefix client",
+    "client": "cd client && npm run start",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build",
     "heroku-postbuild": "npm run build",
     "test": "mocha"
   },
@@ -23,12 +23,10 @@
     "url": "https://github.com/DarrenVictoriano/BitVault/issues"
   },
   "homepage": "https://github.com/DarrenVictoriano/BitVault#readme",
-  "devDependencies": {
-    "concurrently": "^5.1.0"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
+    "concurrently": "^5.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "if-env": "^1.0.4",
