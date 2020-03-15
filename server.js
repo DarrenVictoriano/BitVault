@@ -7,7 +7,7 @@ const app = express();
 
 // Initialize Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json);
+app.use(express.json());
 
 // Serve static assets when deplyoed to heroku
 if (process.env.NODE_ENV === "production") {
