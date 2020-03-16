@@ -65,13 +65,64 @@ module.exports = {
                         res.status(400).json({ error: err })
                     });
                 });
-
             });
-
         })
+    },
+    // ***********************************************************************************************
+    // ************************************* Authenticate User ***************************************
+    // ***********************************************************************************************
+    authenticateUser: function (req, res) {
+        const { email, password } = req.body;
 
+        // Validate data is not null
+        if (!email || !password) {
+            return res.status(400).json({ error: "Please fill all fields." });
+        }
+
+        // Check for existing user
+        User.findOne({ email }).then(user => {
+            // if user is null then return
+            if (!user) {
+                return res.status(400).json({ error: "User does not exists." });
+            }
+
+            // Validate Password
+            bcrypt.compare(password, user.password).then(isMatch => {
+                // If not match then return
+                if (!isMatch) {
+                    return res.status(400).json({ error: "Invalid Credentials" });
+                }
+
+                // If credential match then generate token and send data back
+                jwt.sign({ id: user.id },
+                    process.env.JWT_SECRET,
+                    { expiresIn: 3600 },
+                    (err, token) => {
+                        if (err) throw err;
+
+                        res.status(200).json({
+                            token,
+                            user: {
+                                id: user.id,
+                                name: user.name,
+                                email: user.email
+                            }
+                        });
+                    });
+            });
+        }).catch(err => {
+            res.status(400).json({ error: err })
+        })
+    },
+    // ***********************************************************************************************
+    // ****************************************** Get User *******************************************
+    // ***********************************************************************************************
+    getUser: function (req, res) {
+        User.findById(req.body.id).select("-password")
+            .then(user => {
+                res.status(200).json(user);
+            }).catch(err => {
+                res.status(400).json(err)
+            });
     }
-    // ***********************************************************************************************
-    // ***************************************** Login User ******************************************
-    // ***********************************************************************************************
 }
