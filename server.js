@@ -15,7 +15,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Routes
-// app.use(routes);
+const routes = require('./routes');
+app.use(routes);
 // app.use("/api/user", require('./routes/user'));
 
 // Intialize Mongoose
