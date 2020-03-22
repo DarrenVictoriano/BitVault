@@ -19,7 +19,15 @@ const UserSchema = new Schema({
     registered_date: {
         type: Date,
         default: Date.now
-    }
+    },
+    key: {
+        type: String,
+        required: true
+    },
+    vault: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserVault'
+    }]
 });
 
 let User = mongoose.model('User', UserSchema);

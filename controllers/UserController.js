@@ -2,6 +2,7 @@ require('dotenv').config();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cryptoBitKey = require('../middleware/CryptoBitKey');
 
 module.exports = {
     // ***********************************************************************************************
@@ -22,11 +23,15 @@ module.exports = {
                 return res.status(400).json({ error: "User already exists." });
             }
 
+            // Generate dek key based on users password
+            const key = cryptoBitKey.generateDEK(password);
+
             // Create new User
             const newUser = new User({
                 name,
                 email,
-                password
+                password,
+                key
             });
 
             // Generate Salt and Hash to encrypt master password
@@ -56,7 +61,8 @@ module.exports = {
                                     user: {
                                         id: user.id,
                                         name: user.name,
-                                        email: user.email
+                                        email: user.email,
+                                        key: user.key
                                     }
                                 })
                             }
@@ -105,7 +111,8 @@ module.exports = {
                             user: {
                                 id: user.id,
                                 name: user.name,
-                                email: user.email
+                                email: user.email,
+                                key: user.key
                             }
                         });
                     });
