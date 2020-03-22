@@ -1,11 +1,10 @@
-require('dotenv').config();
 const crypto = require('crypto');
 
-// Key must be 256 byte (32 characters)
+const AES_BYTE = 16;
 
 function encrypt(data, key) {
     // For AES this is always 16
-    let iv = crypto.randomBytes(16);
+    let iv = crypto.randomBytes(AES_BYTE);
     let cipher = crypto.createCipheriv('aes-256-cbc',
         new Buffer.from(key), iv);
     let encrypted = cipher.update(data);
@@ -27,3 +26,5 @@ function decrypt(data, key) {
 
     return decryptedData.toString();
 }
+
+module.exports = { encrypt, decrypt };
