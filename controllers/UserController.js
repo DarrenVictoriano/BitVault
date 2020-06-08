@@ -125,11 +125,22 @@ module.exports = {
     // ****************************************** Get User *******************************************
     // ***********************************************************************************************
     getUser: function (req, res) {
-        User.findById(req.body.id).select("-password")
+        User.findById(req.params.id).select("-password")
             .then(user => {
                 res.status(200).json(user);
             }).catch(err => {
                 res.status(400).json(err)
+            });
+    },
+    // ***********************************************************************************************
+    // **************************************** Delete User ******************************************
+    // ***********************************************************************************************
+    deleteUser: function (req, res) {
+        User.deleteOne({ "_id": req.params.id })
+            .then(user => {
+                res.status(200).json(user);
+            }).catch(err => {
+                res.status(400).json(err);
             });
     }
 }
