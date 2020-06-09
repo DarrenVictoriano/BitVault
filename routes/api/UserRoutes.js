@@ -15,8 +15,8 @@ router.route("/auth")
 // @route       api/user/auth/userID
 // @desc-GET    get user info
 router.route("/auth/:id")
-    .get(UserController.getUser)
-    .delete(UserController.deleteUser);
+    .get(privateRoute, UserController.getUser)          // Private Raoutes
+    .delete(privateRoute, UserController.deleteUser);   // Private Routes
 
 
 module.exports = router;
