@@ -155,7 +155,8 @@ module.exports = {
         User.deleteOne({ "_id": req.params.id })
             .then(user => {
                 res.status(200).json(user);
-            }).catch(err => {
+            })
+            .catch(err => {
                 res.status(400).json(err);
             });
     }
