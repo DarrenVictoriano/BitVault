@@ -27,4 +27,21 @@ function decrypt(data, key) {
     return decryptedData.toString();
 }
 
-module.exports = { encrypt, decrypt };
+function decryptVault(arr, key) {
+    let decryptedArray = [];
+
+    arr.forEach(item => {
+        decryptedArray.push({
+            _id: item._id,
+            account_name: decrypt(item.account_name, key),
+            username: decrypt(item.username, key),
+            password: decrypt(item.password, key),
+            url: decrypt(item.url, key),
+            note: decrypt(item.note, key)
+        });
+    });
+
+    return decryptedArray;
+}
+
+module.exports = { encrypt, decrypt, decryptVault };

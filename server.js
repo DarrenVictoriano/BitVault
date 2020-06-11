@@ -29,7 +29,7 @@ mongoose.connect(db, {
     useCreateIndex: true,
     useUnifiedTopology: true
 }).then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
+    .catch(err => console.log("MongoDB Error: " + err));
 
 // Server PORT
 const PORT = process.env.PORT || 5000;
