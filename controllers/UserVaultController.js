@@ -2,11 +2,11 @@ require('dotenv').config();
 const User = require("../models/User");
 const UserVault = require('../models/UserVault');
 const jwt = require('jsonwebtoken');
-const cryptoBitKey = require('../middleware/CryptoBitData');
+const cryptoBitData = require('../middleware/CryptoBitData');
 
 module.exports = {
     // ***********************************************************************************************
-    // ************************************* Add Entry to Vault **************************************
+    // ************************************* Add Item to Vault ***************************************
     // ***********************************************************************************************
     addItem: function (req, res) {
         // get key from user's account, passed as request body
@@ -14,11 +14,11 @@ module.exports = {
 
         // encrypt date before creating the model
         const newItem = new UserVault({
-            account_name: cryptoBitKey.encrypt(req.body.account_name, key),
-            username: cryptoBitKey.encrypt(req.body.username, key),
-            password: cryptoBitKey.encrypt(req.body.password, key),
-            url: cryptoBitKey.encrypt(req.body.url, key),
-            note: cryptoBitKey.encrypt(req.body.note, key)
+            account_name: cryptoBitData.encrypt(req.body.account_name, key),
+            username: cryptoBitData.encrypt(req.body.username, key),
+            password: cryptoBitData.encrypt(req.body.password, key),
+            url: cryptoBitData.encrypt(req.body.url, key),
+            note: cryptoBitData.encrypt(req.body.note, key)
         });
 
         // save new item into the vaulta table database
@@ -41,7 +41,7 @@ module.exports = {
             });
     },
     // ***********************************************************************************************
-    // ********************************* Update Entry in the Vault ***********************************
+    // ********************************* Update Item in the Vault ************************************
     // ***********************************************************************************************
     updateItem: function (req, res) {
         // get key from user's account
@@ -49,19 +49,38 @@ module.exports = {
 
         // encrypt data before updating it into the database
         const updatedItem = {
-            account_name: cryptoBitKey.encrypt(req.body.account_name, key),
-            username: cryptoBitKey.encrypt(req.body.username, key),
-            password: cryptoBitKey.encrypt(req.body.password, key),
-            url: cryptoBitKey.encrypt(req.body.url, key),
-            note: cryptoBitKey.encrypt(req.body.note, key)
+            account_name: cryptoBitData.encrypt(req.body.account_name, key),
+            username: cryptoBitData.encrypt(req.body.username, key),
+            password: cryptoBitData.encrypt(req.body.password, key),
+            url: cryptoBitData.encrypt(req.body.url, key),
+            note: cryptoBitData.encrypt(req.body.note, key)
         };
 
         // fined one with this vault-ItemID then update it
-        UserVault.findOneAndUpdate({ _id: req.params.id }, updatedItem)
+        UserVault.findOneAndUpdate({ _id: req.params.id }, updatedItem, { new: true })
             .then(updatedItem => {
-                // TODO: decrypt updated data before sending back to the client
-
-                res.status(200).json(updatedItem);
+                // decrypt updated data before sending back to the client
+                let decryptItem = {
+                    "_id": updatedItem._id,
+                    "account_name": cryptoBitData.decrypt(updatedItem.account_name, key),
+                    "username": cryptoBitData.decrypt(updatedItem.username, key),
+                    "password": cryptoBitData.decrypt(updatedItem.password, key),
+                    "url": cryptoBitData.decrypt(updatedItem.url, key),
+                    "note": cryptoBitData.decrypt(updatedItem.note, key)
+                }
+                res.status(200).json(decryptItem);
+            })
+            .catch(err => {
+                res.status(400).json(err);
+            });
+    },
+    // ***********************************************************************************************
+    // ********************************* Delete Item in the Vault ************************************
+    // ***********************************************************************************************
+    deleteItem: function (req, res) {
+        UserVault.deleteOne({ "_id": req.params.id })
+            .then(deletedItem => {
+                res.status(200).json(deletedItem);
             })
             .catch(err => {
                 res.status(400).json(err);
